@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#111827">
+    <title>Máy tính lợi nhuận</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-family: Arial, sans-serif;
+
+            background: #111827;
+            color: #f9fafb;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+
+            padding: 25px;
+
+            background: #1f2937;
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        h1 {
+            margin: 0 0 25px 0;
+
+            text-align: center;
+
+            font-size: 26px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+
+            width: 100%;
+        }
+
+        input {
+            flex: 1;
+
+            width: 100%;
+            min-width: 0;
+
+            padding: 12px;
+
+            border: 1px solid #4b5563;
+            border-radius: 8px;
+
+            background: #111827;
+            color: white;
+
+            font-size: 17px;
+            text-align: center;
+
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #3b82f6;
+        }
+
+        .small-btn {
+            width: 48px;
+            height: 48px;
+
+            border: none;
+            border-radius: 8px;
+
+            background: #374151;
+            color: white;
+
+            font-size: 24px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.15s;
+        }
+
+        .small-btn:hover {
+            background: #4b5563;
+        }
+
+        .small-btn:active {
+            transform: scale(0.95);
+        }
+
+        .calculate-btn {
+            width: 100%;
+
+            margin-top: 5px;
+            padding: 14px;
+
+            border: none;
+            border-radius: 8px;
+
+            background: #2563eb;
+            color: white;
+
+            font-size: 17px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.15s;
+        }
+
+        .calculate-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .calculate-btn:active {
+            transform: scale(0.99);
+        }
+
+        .error {
+            display: none;
+
+            margin-top: 15px;
+            padding: 12px;
+
+            border-radius: 8px;
+
+            background: #451a1a;
+            color: #fca5a5;
+
+            text-align: center;
+        }
+
+        .result {
+            display: none;
+
+            margin-top: 25px;
+            padding: 20px;
+
+            background: #111827;
+
+            border-radius: 12px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 20px;
+
+            padding: 12px 0;
+
+            border-bottom: 1px solid #374151;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-row span {
+            color: #d1d5db;
+        }
+
+        .result-row strong {
+            text-align: right;
+        }
+
+        .profit {
+            font-size: 20px;
+        }
+
+        @media (max-width: 500px) {
+
+            body {
+                padding: 12px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            .result-row {
+                flex-direction: column;
+                align-items: flex-start;
+
+                gap: 5px;
+            }
+
+            .result-row strong {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <div class="container">
+
+        <h1>Máy tính lợi nhuận</h1>
+
+
+        <!-- ========================= -->
+        <!-- GIÁ BÁN -->
+        <!-- ========================= -->
+
+        <div class="input-group">
+
+            <label for="sellingPrice">
+                Giá bán / sản phẩm (VNĐ)
+            </label>
+
+            <div class="input-row">
+
+                <button
+                    type="button"
+                    class="small-btn"
+                    id="minusSelling"
+                >
+                    −
+                </button>
+
+                <input
+                    type="number"
+                    id="sellingPrice"
+                    value="10000"
+                    min="0"
+                    step="100"
+                >
+
+                <button
+                    type="button"
+                    class="small-btn"
+                    id="plusSelling"
+                >
+                    +
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- GIÁ VỐN -->
+        <!-- ========================= -->
+
+        <div class="input-group">
+
+            <label for="costPrice">
+                Giá vốn / sản phẩm (VNĐ)
+            </label>
+
+            <div class="input-row">
+
+                <button
+                    type="button"
+                    class="small-btn"
+                    id="minusCost"
+                >
+                    −
+                </button>
+
+                <input
+                    type="number"
+                    id="costPrice"
+                    value="7000"
+                    min="0"
+                    step="100"
+                >
+
+                <button
+                    type="button"
+                    class="small-btn"
+                    id="plusCost"
+                >
+                    +
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- SỐ LƯỢNG -->
+        <!-- ========================= -->
+
+        <div class="input-group">
+
+            <label for="quantity">
+                Số lượng
+            </label>
+
+            <div class="input-row">
+
+                <button
+                    type="button"
+                    class="small-btn"
+                    id="minusQuantity"
+                >
+                    −
+                </button>
+
+                <input
+                    type="number"
+                    id="quantity"
+                    value="100"
+                    min="1"
+                    step="1"
+                >
+
+                <button
+                    type="button"
+                    class="small-btn"
+                    id="plusQuantity"
+                >
+                    +
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- NÚT TÍNH -->
+        <!-- ========================= -->
+
+        <button
+            type="button"
+            class="calculate-btn"
+            id="calculateButton"
+        >
+            Tính lợi nhuận
+        </button>
+
+
+        <!-- ========================= -->
+        <!-- THÔNG BÁO LỖI -->
+        <!-- ========================= -->
+
+        <div
+            class="error"
+            id="error"
+        ></div>
+
+
+        <!-- ========================= -->
+        <!-- KẾT QUẢ -->
+        <!-- ========================= -->
+
+        <div
+            class="result"
+            id="result"
+        >
+
+            <div class="result-row">
+                <span>Doanh thu:</span>
+                <strong id="revenue"></strong>
+            </div>
+
+            <div class="result-row">
+                <span>Tổng giá vốn:</span>
+                <strong id="totalCost"></strong>
+            </div>
+
+            <div class="result-row">
+                <span>Lợi nhuận:</span>
+                <strong
+                    id="profit"
+                    class="profit"
+                ></strong>
+            </div>
+
+            <div class="result-row">
+                <span>Biên lợi nhuận:</span>
+                <strong id="margin"></strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- JAVASCRIPT -->
+    <!-- ============================= -->
+
+    <script>
+
+        // ---------------------------------
+        // LẤY CÁC Ô NHẬP
+        // ---------------------------------
+
+        const sellingPrice =
+            document.getElementById("sellingPrice");
+
+        const costPrice =
+            document.getElementById("costPrice");
+
+        const quantity =
+            document.getElementById("quantity");
+
+
+        // ---------------------------------
+        // LẤY CÁC NÚT + / -
+        // ---------------------------------
+
+        const minusSelling =
+            document.getElementById("minusSelling");
+
+        const plusSelling =
+            document.getElementById("plusSelling");
+
+        const minusCost =
+            document.getElementById("minusCost");
+
+        const plusCost =
+            document.getElementById("plusCost");
+
+        const minusQuantity =
+            document.getElementById("minusQuantity");
+
+        const plusQuantity =
+            document.getElementById("plusQuantity");
+
+
+        // ---------------------------------
+        // CÁC PHẦN HIỂN THỊ
+        // ---------------------------------
+
+        const calculateButton =
+            document.getElementById("calculateButton");
+
+        const result =
+            document.getElementById("result");
+
+        const error =
+            document.getElementById("error");
+
+        const revenue =
+            document.getElementById("revenue");
+
+        const totalCost =
+            document.getElementById("totalCost");
+
+        const profit =
+            document.getElementById("profit");
+
+        const margin =
+            document.getElementById("margin");
+
+
+        // ---------------------------------
+        // ĐỊNH DẠNG TIỀN VNĐ
+        // ---------------------------------
+
+        function formatVND(number) {
+
+            return new Intl.NumberFormat("vi-VN")
+                .format(number) + " VNĐ";
+
+        }
+
+
+        // ---------------------------------
+        // ẨN KẾT QUẢ CŨ
+        // ---------------------------------
+
+        function hideResult() {
+
+            result.style.display = "none";
+
+            error.style.display = "none";
+
+        }
+
+
+        // ---------------------------------
+        // THAY ĐỔI GIÁ TRỊ
+        // ---------------------------------
+
+        function changeValue(input, amount) {
+
+            let value = Number(input.value);
+
+            if (isNaN(value)) {
+
+                value = 0;
+
+            }
+
+            value = value + amount;
+
+
+            // Không cho giá bán / giá vốn âm
+
+            if (input === sellingPrice ||
+                input === costPrice) {
+
+                if (value < 0) {
+
+                    value = 0;
+
+                }
+
+            }
+
+
+            // Số lượng tối thiểu = 1
+
+            if (input === quantity) {
+
+                if (value < 1) {
+
+                    value = 1;
+
+                }
+
+            }
+
+
+            input.value = value;
+
+            hideResult();
+
+        }
+
+
+        // ---------------------------------
+        // GIÁ BÁN
+        // ---------------------------------
+
+        minusSelling.addEventListener(
+            "click",
+            function () {
+
+                changeValue(
+                    sellingPrice,
+                    -100
+                );
+
+            }
+        );
+
+
+        plusSelling.addEventListener(
+            "click",
+            function () {
+
+                changeValue(
+                    sellingPrice,
+                    100
+                );
+
+            }
+        );
+
+
+        // ---------------------------------
+        // GIÁ VỐN
+        // ---------------------------------
+
+        minusCost.addEventListener(
+            "click",
+            function () {
+
+                changeValue(
+                    costPrice,
+                    -100
+                );
+
+            }
+        );
+
+
+        plusCost.addEventListener(
+            "click",
+            function () {
+
+                changeValue(
+                    costPrice,
+                    100
+                );
+
+            }
+        );
+
+
+        // ---------------------------------
+        // SỐ LƯỢNG
+        // ---------------------------------
+
+        minusQuantity.addEventListener(
+            "click",
+            function () {
+
+                changeValue(
+                    quantity,
+                    -1
+                );
+
+            }
+        );
+
+
+        plusQuantity.addEventListener(
+            "click",
+            function () {
+
+                changeValue(
+                    quantity,
+                    1
+                );
+
+            }
+        );
+
+
+        // ---------------------------------
+        // KHI NHẬP TRỰC TIẾP
+        // ---------------------------------
+
+        sellingPrice.addEventListener(
+            "input",
+            hideResult
+        );
+
+        costPrice.addEventListener(
+            "input",
+            hideResult
+        );
+
+        quantity.addEventListener(
+            "input",
+            hideResult
+        );
+
+
+        // ---------------------------------
+        // TÍNH LỢI NHUẬN
+        // ---------------------------------
+
+        calculateButton.addEventListener(
+            "click",
+            function () {
+
+                const selling =
+                    Number(sellingPrice.value);
+
+                const cost =
+                    Number(costPrice.value);
+
+                const qty =
+                    Number(quantity.value);
+
+
+                // -----------------------------
+                // KIỂM TRA DỮ LIỆU
+                // -----------------------------
+
+                if (
+                    sellingPrice.value === "" ||
+                    costPrice.value === "" ||
+                    quantity.value === ""
+                ) {
+
+                    error.textContent =
+                        "Vui lòng nhập đầy đủ thông tin.";
+
+                    error.style.display = "block";
+
+                    result.style.display = "none";
+
+                    return;
+
+                }
+
+
+                if (selling <= 0) {
+
+                    error.textContent =
+                        "Giá bán phải lớn hơn 0.";
+
+                    error.style.display = "block";
+
+                    result.style.display = "none";
+
+                    return;
+
+                }
+
+
+                if (cost < 0) {
+
+                    error.textContent =
+                        "Giá vốn không được âm.";
+
+                    error.style.display = "block";
+
+                    result.style.display = "none";
+
+                    return;
+
+                }
+
+
+                if (qty <= 0) {
+
+                    error.textContent =
+                        "Số lượng phải lớn hơn 0.";
+
+                    error.style.display = "block";
+
+                    result.style.display = "none";
+
+                    return;
+
+                }
+
+
+                // -----------------------------
+                // TÍNH TOÁN
+                // -----------------------------
+
+                const totalRevenue =
+                    selling * qty;
+
+                const totalCostValue =
+                    cost * qty;
+
+                const profitValue =
+                    totalRevenue - totalCostValue;
+
+                const marginValue =
+                    (profitValue / totalRevenue) * 100;
+
+
+                // -----------------------------
+                // HIỂN THỊ
+                // -----------------------------
+
+                revenue.textContent =
+                    formatVND(totalRevenue);
+
+                totalCost.textContent =
+                    formatVND(totalCostValue);
+
+                profit.textContent =
+                    formatVND(profitValue);
+
+                margin.textContent =
+                    marginValue.toFixed(2) + "%";
+
+
+                // Hiện kết quả
+
+                error.style.display = "none";
+
+                result.style.display = "block";
+
+            }
+        );
+
+    </script>
+<script>
+    if ("serviceWorker" in navigator) {
+
+        window.addEventListener("load", function () {
+
+            navigator.serviceWorker
+                .register("service-worker.js")
+
+                .then(function () {
+
+                    console.log(
+                        "Service Worker đã đăng ký thành công."
+                    );
+
+                })
+
+                .catch(function (error) {
+
+                    console.log(
+                        "Service Worker lỗi:",
+                        error
+                    );
+
+                });
+
+        });
+
+    }
+</script>
+</body>
+</html>
